@@ -11,7 +11,7 @@ namespace WebDemo.Services
     {
         public TodoDBContext(DbContextOptions options) : base(options) { }
 
-        public DbSet<ToDoItem> ToDoItems { get; set; }
+        public DbSet<Cliente> ToDoItems { get; set; }
     }
 
 }

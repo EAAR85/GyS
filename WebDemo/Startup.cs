@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -12,6 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebDemo.Common;
+using WebDemo.Repository;
 using WebDemo.Services;
 
 namespace WebDemo
@@ -19,10 +22,10 @@ namespace WebDemo
     public class Startup
     {
 
-// tools/ comand line
-//dotnet tool install --global dotnet-ef
-//dotnet ef migrations add Initial
-//dotnet ef database update
+        // tools/ comand line
+        //dotnet tool install --global dotnet-ef
+        //dotnet ef migrations add Initial
+        //dotnet ef database update
 
 
         public Startup(IConfiguration configuration)
@@ -36,15 +39,23 @@ namespace WebDemo
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddAutoMapper(typeof(Startup));
+
             services.AddDbContext<TodoDBContext>(options =>
-    options.UseSqlServer(Configuration.GetConnectionString("Database")
-));
+                options.UseSqlServer(Configuration.GetConnectionString("Database")
+            ));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebDemo", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "G&S Demo", Version = "v1" });
             });
+
+            
+
+            // My custom validations
+            services.AddTransient<ClienteValidator>();
+            services.AddTransient<ClienteRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,7 +65,7 @@ namespace WebDemo
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebDemo v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "G&S Demo v1"));
             }
 
             app.UseHttpsRedirection();
